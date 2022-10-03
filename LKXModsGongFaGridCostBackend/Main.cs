@@ -29,15 +29,14 @@ namespace LKXModsGongFaGridCostBackend
         public override void Initialize()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(Run));
-            AdaptableLog.Info("测试1");
             CombatSkill.Instance.GetAllKeys();
         }
 
         /// <summary>
-        /// patch功法修改
+        /// 功法格子
         /// </summary>
         /// <param name="__instance"></param>
-        /// <param name="__result"></param>
+        /// <param name="____dataArray"></param>
         [HarmonyPostfix, HarmonyPatch(typeof(CombatSkill), "GetAllKeys")]
         public static void CombatSkill_GetAllKeys_Patch(CombatSkill __instance, ref List<CombatSkillItem> ____dataArray)
         {
@@ -45,15 +44,13 @@ namespace LKXModsGongFaGridCostBackend
             {
                 return;
             }
-            AdaptableLog.Info("测试2");
             foreach (CombatSkillItem item in ____dataArray)
             {
-                AdaptableLog.Info(item.Name + ":" + item.GridCost + "-" + item.GenericGrid);
-                /*typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)1);
+                typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)1);
                 if (item.Type == GameData.Domains.CombatSkill.CombatSkillType.Neigong)
                 {
                     typeof(CombatSkillItem).GetField("GenericGrid").SetValue(item, (sbyte)12);
-                }*/
+                }
             }
 
             Loaded = true;

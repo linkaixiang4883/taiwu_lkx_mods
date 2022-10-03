@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LKXModsGongFaGridCost", "LKXModsGongFaGridCost\LKXModsGongFaGridCost.csproj", "{CBB708F7-9C6A-42FB-9C0F-DDE2BACEFA9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LKXModsWarehouseAndBag", "LKXModsWarehouseAndBag\LKXModsWarehouseAndBag.csproj", "{5D52981A-65F9-48EF-9B7E-26E4A206E146}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LKXModsWarehouseAndBag", "LKXModsWarehouseAndBag\LKXModsWarehouseAndBag.csproj", "{5D52981A-65F9-48EF-9B7E-26E4A206E146}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LKXModsGongFaGridCostBackend", "LKXModsGongFaGridCostBackend\LKXModsGongFaGridCostBackend.csproj", "{D754DC98-DA6D-4312-920B-252A4FFE3558}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{5D52981A-65F9-48EF-9B7E-26E4A206E146}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D52981A-65F9-48EF-9B7E-26E4A206E146}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D52981A-65F9-48EF-9B7E-26E4A206E146}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D754DC98-DA6D-4312-920B-252A4FFE3558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D754DC98-DA6D-4312-920B-252A4FFE3558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D754DC98-DA6D-4312-920B-252A4FFE3558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D754DC98-DA6D-4312-920B-252A4FFE3558}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
