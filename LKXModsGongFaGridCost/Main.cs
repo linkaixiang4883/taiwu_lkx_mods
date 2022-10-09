@@ -2,7 +2,6 @@
 using HarmonyLib;
 using System.Collections.Generic;
 using TaiwuModdingLib.Core.Plugin;
-using UnityEngine;
 
 namespace LKXModsGongFaGridCost
 {
@@ -46,7 +45,7 @@ namespace LKXModsGongFaGridCost
         /// </summary>
         /// <param name="____dataArray"></param>
         [HarmonyPostfix, HarmonyPatch(typeof(CombatSkill), "GetAllKeys")]
-        public static void CombatSkill_Patch(ref List<CombatSkillItem> ____dataArray)
+        public static void PatchSkill(ref List<CombatSkillItem> ____dataArray)
         {
             if (Loaded)
             {
