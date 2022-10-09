@@ -1,4 +1,5 @@
 ﻿using Config;
+using Config.Common;
 using HarmonyLib;
 using System.Collections.Generic;
 using TaiwuModdingLib.Core.Plugin;
@@ -35,9 +36,20 @@ namespace LKXModsGongFaGridCost
         public override void Initialize()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(Run));
-            //执行
-            CombatSkill.Instance.GetAllKeys();
+        }
 
+        private static int gridCost;
+        private static int genericGrid;
+        private static int baseNeigongGrid;
+        public override void OnModSettingUpdate()
+        {
+            Loaded = false;
+            ModManager.GetSetting(ModIdStr, "gridCost", ref gridCost);
+            ModManager.GetSetting(ModIdStr, "genericGrid", ref genericGrid);
+            ModManager.GetSetting(ModIdStr, "baseNeigongGrid", ref baseNeigongGrid);
+
+            CombatSkill.Instance.GetAllKeys();
+            GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[0] = (sbyte)baseNeigongGrid;
         }
 
         /// <summary>
@@ -53,10 +65,10 @@ namespace LKXModsGongFaGridCost
             }
             foreach (CombatSkillItem item in ____dataArray)
             {
-                typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)1);
+                typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)gridCost);
                 if (item.Type == GameData.Domains.CombatSkill.CombatSkillType.Neigong)
                 {
-                    typeof(CombatSkillItem).GetField("GenericGrid").SetValue(item, (sbyte)12);
+                    typeof(CombatSkillItem).GetField("GenericGrid").SetValue(item, (sbyte)genericGrid);
                 }
             }
 
