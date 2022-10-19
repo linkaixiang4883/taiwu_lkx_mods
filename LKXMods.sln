@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LKXModsWarehouseAndBag", "L
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LKXModsGongFaGridCostBackend", "LKXModsGongFaGridCostBackend\LKXModsGongFaGridCostBackend.csproj", "{CFD3673E-129C-46B5-8658-DEE6364BF6D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{2467E55D-9EF1-4328-B21A-8D214BFC183B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{2467E55D-9EF1-4328-B21A-8D214BFC183B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary2", "ClassLibrary2\ClassLibrary2.csproj", "{DC7A7D28-D1B6-4268-8931-05EBC1D9E632}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LKXModsEnYi", "LKXModsEnYi\LKXModsEnYi.csproj", "{011274C7-7F5B-46B0-ACC1-9FC11C3621C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{DC7A7D28-D1B6-4268-8931-05EBC1D9E632}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC7A7D28-D1B6-4268-8931-05EBC1D9E632}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC7A7D28-D1B6-4268-8931-05EBC1D9E632}.Release|Any CPU.Build.0 = Release|Any CPU
+		{011274C7-7F5B-46B0-ACC1-9FC11C3621C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{011274C7-7F5B-46B0-ACC1-9FC11C3621C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{011274C7-7F5B-46B0-ACC1-9FC11C3621C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{011274C7-7F5B-46B0-ACC1-9FC11C3621C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

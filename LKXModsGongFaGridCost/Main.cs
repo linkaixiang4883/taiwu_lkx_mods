@@ -7,7 +7,7 @@ using TaiwuModdingLib.Core.Plugin;
 
 namespace LKXModsGongFaGridCost
 {
-    [PluginConfig("LKXModsGongFaGridCost", "LKX", "0.2.3")]
+    [PluginConfig("LKXModsGongFaGridCost", "LKX", "0.11.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;

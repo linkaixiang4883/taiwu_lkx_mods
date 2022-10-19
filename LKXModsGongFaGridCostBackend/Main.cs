@@ -12,7 +12,7 @@ using GameData.Domains.Character;
 
 namespace LKXModsGongFaGridCostBackend
 {
-    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.2.3")]
+    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.11.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
