@@ -13,13 +13,20 @@ using GameData.Domains.Map;
 
 namespace LKXModsEnYi
 {
-    [PluginConfig("LKXModsEnYi", "LKX", "0.1.0")]
+    [PluginConfig("LKXModsEnYi", "LKX", "0.2.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
 
+        private const short FULONG_AREA_TEMPLATE_ID = 29;
+        private const short RANSHAN_AREA_TEMPLATE_ID = 22;
+        private const short KONGSANG_AREA_TEMPLATE_ID = 25;
+
         private static short _fulongAreaTemplateId = 29;
         private static short _ranshanAreaTemplateId = 22;
+        private static short _kongsangAreaTemplateId = 25;
+
+        //private static Dictionary<short, bool> _areaDict = new Dictionary<short, bool>();
 
         public override void Dispose()
         {
@@ -35,12 +42,18 @@ namespace LKXModsEnYi
             harmony = Harmony.CreateAndPatchAll(typeof(Run));
         }
 
+        private static bool enableAll;
+
         private static bool enableRanShan;
         private static bool enableFuLong;
+        private static bool enableKongSangShan;
         public override void OnModSettingUpdate()
         {
+            DomainManager.Mod.GetSetting(ModIdStr, "enableAll", ref enableAll);
+
             DomainManager.Mod.GetSetting(ModIdStr, "enableRanShan", ref enableRanShan);
             DomainManager.Mod.GetSetting(ModIdStr, "enableFuLong", ref enableFuLong);
+            DomainManager.Mod.GetSetting(ModIdStr, "enableKongSangShan", ref enableKongSangShan);
         }
 
         public override void OnLoadedArchiveData()
@@ -65,18 +78,39 @@ namespace LKXModsEnYi
         [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Map.MapDomain), "ChangeSpiritualDebt")]
         public static void MapDomain_ChangeSpiritualDebt_Patch(GameData.Domains.Map.MapDomain __instance, DataContext context, short areaId, ref short spiritualDebt)
         {
+            if (enableAll)
+            {
+                //AdaptableLog.Info("设置全地区100%恩义。");
+                spiritualDebt = 1000;
+                return;
+            }
+
             MapAreaData areaData = __instance.GetElement_Areas(areaId);
             //AdaptableLog.Info("spiritualDebt:" + spiritualDebt);
+            /*switch (areaData.GetTemplateId())
+            {
+                case FULONG_AREA_TEMPLATE_ID:
+                case RANSHAN_AREA_TEMPLATE_ID:
+                case KONGSANG_AREA_TEMPLATE_ID:
+                    spiritualDebt = 1000;
+                    break;
+            }*/
             if (_fulongAreaTemplateId > 0 && enableFuLong && areaData.GetTemplateId() == _fulongAreaTemplateId)
             {
                 //AdaptableLog.Info("设置赤明岛100%恩义。");
                 spiritualDebt = 1000;
             }
-            if(_ranshanAreaTemplateId > 0 && enableRanShan && areaData.GetTemplateId() == _ranshanAreaTemplateId)
+            if (_ranshanAreaTemplateId > 0 && enableRanShan && areaData.GetTemplateId() == _ranshanAreaTemplateId)
             {
                 //AdaptableLog.Info("设置然山100%恩义。");
                 spiritualDebt = 1000;
             }
+            if (_kongsangAreaTemplateId > 0 && enableKongSangShan && areaData.GetTemplateId() == _kongsangAreaTemplateId)
+            {
+                //AdaptableLog.Info("设置空桑100%恩义。");
+                spiritualDebt = 1000;
+            }
+
         }
 
     }
