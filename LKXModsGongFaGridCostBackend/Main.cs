@@ -9,10 +9,11 @@ using GameData.Domains.CombatSkill;
 using System;
 using GameData.Common;
 using GameData.Domains.Character;
+using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
 
 namespace LKXModsGongFaGridCostBackend
 {
-    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.11.0")]
+    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.13.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -38,10 +39,23 @@ namespace LKXModsGongFaGridCostBackend
         }
 
         private static bool enableGridCost;
+        private static bool enableAllGridCost;
         private static int gridCost;
 
-        //private static bool enableGenericGrid;
-        //private static int genericGrid;
+        private static int neigongGridCost;
+        private static int posingGridCost;
+        private static int stuntGridCost;
+        private static int fistAndPalmGridCost;
+        private static int fingerGridCost;
+        private static int legGridCost;
+        private static int throwGridCost;
+        private static int swordGridCost;
+        private static int bladeGridCost;
+        private static int polearmGridCost;
+        private static int specialGridCost;
+        private static int whipGridCost;
+        private static int controllableShotGridCost;
+        private static int combatMusicGridCost;
 
         private static bool enableBaseGrid;
         private static int baseNeigongGrid;
@@ -53,9 +67,23 @@ namespace LKXModsGongFaGridCostBackend
         {
             Loaded = false;
             DomainManager.Mod.GetSetting(ModIdStr, "enableGridCost", ref enableGridCost);
-            //DomainManager.Mod.GetSetting(ModIdStr, "enableGenericGrid", ref enableGenericGrid);
+            DomainManager.Mod.GetSetting(ModIdStr, "enableAllGridCost", ref enableAllGridCost);
             DomainManager.Mod.GetSetting(ModIdStr, "gridCost", ref gridCost);
-            //DomainManager.Mod.GetSetting(ModIdStr, "genericGrid", ref genericGrid);
+
+            DomainManager.Mod.GetSetting(ModIdStr, "neigongGridCost", ref neigongGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "posingGridCost", ref posingGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "stuntGridCost", ref stuntGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "fistAndPalmGridCost", ref fistAndPalmGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "fingerGridCost", ref fingerGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "legGridCost", ref legGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "throwGridCost", ref throwGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "swordGridCost", ref swordGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "bladeGridCost", ref bladeGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "polearmGridCost", ref polearmGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "specialGridCost", ref specialGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "whipGridCost", ref whipGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "controllableShotGridCost", ref controllableShotGridCost);
+            DomainManager.Mod.GetSetting(ModIdStr, "combatMusicGridCost", ref combatMusicGridCost);
 
             DomainManager.Mod.GetSetting(ModIdStr, "enableBaseGrid", ref enableBaseGrid);
             DomainManager.Mod.GetSetting(ModIdStr, "baseNeigongGrid", ref baseNeigongGrid);
@@ -102,125 +130,130 @@ namespace LKXModsGongFaGridCostBackend
             {
                 return;
             }
+            if (!enableGridCost)
+            {
+                return;
+            }
             foreach (CombatSkillItem item in ____dataArray)
             {
-                if(enableGridCost && item.GridCost > gridCost)
+                if (enableAllGridCost)
                 {
-                    typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)gridCost);
+                    ModifGridCost(item, gridCost);
+                }
+                else
+                {
+                    switch (item.Type)
+                    {
+                        case CombatSkillType.Neigong:
+                            if (neigongGridCost > 0) ModifGridCost(item, neigongGridCost);
+                            break;
+                        case CombatSkillType.Posing:
+                            if (posingGridCost > 0) ModifGridCost(item, posingGridCost);
+                            break;
+                        case CombatSkillType.Stunt:
+                            if (stuntGridCost > 0) ModifGridCost(item, stuntGridCost);
+                            break;
+                        case CombatSkillType.FistAndPalm:
+                            if (fistAndPalmGridCost > 0) ModifGridCost(item, fistAndPalmGridCost);
+                            break;
+                        case CombatSkillType.Finger:
+                            if (fingerGridCost > 0) ModifGridCost(item, fingerGridCost);
+                            break;
+                        case CombatSkillType.Leg:
+                            if (legGridCost > 0) ModifGridCost(item, legGridCost);
+                            break;
+                        case CombatSkillType.Throw:
+                            if (throwGridCost > 0) ModifGridCost(item, throwGridCost);
+                            break;
+                        case CombatSkillType.Sword:
+                            if (swordGridCost > 0) ModifGridCost(item, swordGridCost);
+                            break;
+                        case CombatSkillType.Blade:
+                            if (bladeGridCost > 0) ModifGridCost(item, bladeGridCost);
+                            break;
+                        case CombatSkillType.Polearm:
+                            if (polearmGridCost > 0) ModifGridCost(item, polearmGridCost);
+                            break;
+                        case CombatSkillType.Special:
+                            if (specialGridCost > 0) ModifGridCost(item, specialGridCost);
+                            break;
+                        case CombatSkillType.Whip:
+                            if (whipGridCost > 0) ModifGridCost(item, whipGridCost);
+                            break;
+                        case CombatSkillType.ControllableShot:
+                            if (controllableShotGridCost > 0) ModifGridCost(item, controllableShotGridCost);
+                            break;
+                        case CombatSkillType.CombatMusic:
+                            if (combatMusicGridCost > 0) ModifGridCost(item, combatMusicGridCost);
+                            break;
+                        default:
+                            //TODO:不知道为什么没有
+                            break;
+                    }
                 }
             }
 
             Loaded = true;
         }
 
+        /// <summary>
+        /// 修改格子
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="cost"></param>
+        private static void ModifGridCost(CombatSkillItem item, int cost)
+        {
+            if (item.GridCost > cost)
+            {
+                typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)gridCost);
+            }
+        }
+
         [HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillNeedMobilityCanUse")]
         public static void CombatDomain_UpdateSkillNeedMobilityCanUse_Patch(CombatCharacter character, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
         {
-            if (!character.IsAlly)
+            /*if (!character.IsAlly)
             {
                 CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
                 foreach (CombatSkillKey combatSkillKey in  ____enemySkillDataDict.Keys)
                 {
                     ____enemySkillDataDict.Remove(combatSkillKey);
                 }
+            }*/
+
+            //尝试解决队友功法报错
+            CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
+            foreach (CombatSkillKey combatSkillKey in ____enemySkillDataDict.Keys)
+            {
+                if (!combatSkillCollection.ContainsKey(combatSkillKey))
+                {
+                    (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Remove(combatSkillKey);
+                }
             }
-            
+
         }
 
         [HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillCanUse", new Type[] {typeof(CombatCharacter), typeof(short), typeof(DataContext) })]
         public static void CombatDomain_UpdateSkillCanUse_Patch(CombatCharacter character, short skillId, DataContext context, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
         {
-            if (!character.IsAlly)
+            /*if (!character.IsAlly)
             {
                 CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-                foreach (CombatSkillKey combatSkillKey in ____enemySkillDataDict.Keys)
+                foreach (CombatSkillKey combatSkillKey in  ____enemySkillDataDict.Keys)
                 {
                     ____enemySkillDataDict.Remove(combatSkillKey);
                 }
-            }
-        }
-
-        /// <summary>
-        /// 获取技能格子数量
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="__result"></param>
-        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.CharacterDomain), "GetCombatSkillSlotCounts")]
-        public static void CharacterDomain_GetCombatSkillSlotCounts_Patch(GameData.Domains.Character.CharacterDomain __instance, ref sbyte[] __result)
-        {
-            //只修改技能格子会导致报错。这次更新后不在出现这样的问题，取消该处修改。
-            //还是得改这儿。
-
-            /*if (enableBaseGrid)
-            {
-                if (baseNeigongGrid > 0)
-                {
-                    __result[CombatSkillEquipType.Neigong] = (sbyte)baseNeigongGrid;
-                }
-                if (baseCuipoGrid > 0)
-                {
-                    __result[CombatSkillEquipType.Attack] = (sbyte)baseCuipoGrid;
-                }
-                if(baseQingyingGrid > 0)
-                {
-                    __result[CombatSkillEquipType.Agile] = (sbyte)baseQingyingGrid;
-                }
-                if(baseHutiGrid > 0)
-                {
-                    __result[CombatSkillEquipType.Defense] = (sbyte)baseHutiGrid;
-                }
-                if(baseQiqiaoGrid > 0)
-                {
-                    __result[CombatSkillEquipType.Assist] = (sbyte)baseQiqiaoGrid;
-                }
-                for(int i = 0; i < GameData.Domains.Character.CombatSkillHelper.MaxSlotCounts.Length; i++)
-                {
-                    if (__result[i] > GameData.Domains.Character.CombatSkillHelper.MaxSlotCounts[i])
-                    {
-                        __result[i] = GameData.Domains.Character.CombatSkillHelper.MaxSlotCounts[i];
-                    }
-                }
             }*/
-        }
 
-        /// <summary>
-        /// 捕获一下异常
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="__result"></param>
-        [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Character.CharacterDomain), "SetCombatSkillSlot")]
-        public unsafe static void CharacterDomain_SetCombatSkillSlot_Patch(GameData.Domains.Character.CharacterDomain __instance, DataContext context, int charId, sbyte equipType, int index, short skillTemplateId)
-        {
-            //部分人异常，这里捕获看看问题。
-            GameData.Domains.Character.Character character = DomainManager.Character.GetElement_Objects(charId);
-            short[] equippedCombatSkills = character.GetEquippedCombatSkills();
-            CharacterDomain.SortEquippedCombatSkills(charId, equippedCombatSkills);
-
-            AdaptableLog.Info("功法格子mod异常记录：");
-            AdaptableLog.Info("太吾id：" + DomainManager.Taiwu.GetTaiwuCharId());
-            AdaptableLog.Info("charId：" + charId);
-            AdaptableLog.Info("equipType：" + equipType);
-            AdaptableLog.Info("index：" + index);
-            AdaptableLog.Info("skillTemplateId：" + skillTemplateId);
-            AdaptableLog.Info("---------------");
-            sbyte* pGridCounts = stackalloc sbyte[(int)(UIntPtr)5];
-            Span<sbyte> gridCounts = new Span<sbyte>((void*)pGridCounts, 5);
-            character.GetCombatSkillSlotCounts(gridCounts);
-            DomainManager.Taiwu.GetGridCountsWithGeneric(gridCounts);
-            if (skillTemplateId >= 0)
+            //尝试解决队友功法报错
+            CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
+            foreach (CombatSkillKey combatSkillKey in ____enemySkillDataDict.Keys)
             {
-                sbyte gridCost = DomainManager.CombatSkill.GetCombatSkillGridCost(charId, skillTemplateId);
-                AdaptableLog.Info("gridCost:" + gridCost);
+                if (!combatSkillCollection.ContainsKey(combatSkillKey))
+                {
+                    (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Remove(combatSkillKey);
+                }
             }
-            else
-            {
-                AdaptableLog.Info("没有技能模板id");
-            }
-            for (int i = 0; i < gridCounts.Length; i++)
-            {
-                AdaptableLog.Info("gridCounts:" + gridCounts[i] + "  index:" + i);
-            }
-            AdaptableLog.Info("---------------");
         }
     }
 }
