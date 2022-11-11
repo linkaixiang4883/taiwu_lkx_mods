@@ -223,7 +223,7 @@ namespace LKXModsGongFaGridCostBackend
 
             //尝试解决队友功法报错
             CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-            foreach (CombatSkillKey combatSkillKey in ____enemySkillDataDict.Keys)
+            foreach (CombatSkillKey combatSkillKey in (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Keys)
             {
                 if (!combatSkillCollection.ContainsKey(combatSkillKey))
                 {
@@ -247,7 +247,7 @@ namespace LKXModsGongFaGridCostBackend
 
             //尝试解决队友功法报错
             CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-            foreach (CombatSkillKey combatSkillKey in ____enemySkillDataDict.Keys)
+            foreach (CombatSkillKey combatSkillKey in (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Keys)
             {
                 if (!combatSkillCollection.ContainsKey(combatSkillKey))
                 {
