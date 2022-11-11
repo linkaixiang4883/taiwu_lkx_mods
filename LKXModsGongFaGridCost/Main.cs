@@ -206,7 +206,7 @@ namespace LKXModsGongFaGridCost
         {
             if (item.GridCost > cost)
             {
-                typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)gridCost);
+                typeof(CombatSkillItem).GetField("GridCost").SetValue(item, (sbyte)cost);
             }
         }
     }
