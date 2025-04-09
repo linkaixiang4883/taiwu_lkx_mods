@@ -1,7 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +12,10 @@
     </Reference>
     <Reference Include="GameData">
       <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Redzen">
+      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\Redzen.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="TaiwuModdingLib">

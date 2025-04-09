@@ -8,7 +8,7 @@ using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
 
 namespace LKXModsGongFaGridCost
 {
-    [PluginConfig("LKXModsGongFaGridCost", "LKX", "0.13.0")]
+    [PluginConfig("LKXModsGongFaGridCost", "LKX", "0.0.76.30")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;

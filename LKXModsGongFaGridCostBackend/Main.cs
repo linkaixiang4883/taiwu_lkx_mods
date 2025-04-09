@@ -10,10 +10,14 @@ using System;
 using GameData.Common;
 using GameData.Domains.Character;
 using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
+using CombatSkillHelper = GameData.Domains.Character.CombatSkillHelper;
+using HarmonyLib.Tools;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace LKXModsGongFaGridCostBackend
 {
-    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.13.0")]
+    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.0.76.30")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -32,6 +36,8 @@ namespace LKXModsGongFaGridCostBackend
                 harmony = null;
             }
         }
+
+        private const sbyte NewMaxSlotCount = 99;
 
         public override void Initialize()
         {
@@ -95,27 +101,42 @@ namespace LKXModsGongFaGridCostBackend
             Config.CombatSkill.Instance.GetAllKeys();
             if (enableBaseGrid)
             {
+                var maxSlotField = typeof(GameData.Domains.Character.CombatSkillHelper)
+                .GetField("MaxSlotCounts", BindingFlags.Static | BindingFlags.Public);
+                sbyte[] maxSlots = (sbyte[])maxSlotField.GetValue(null);
                 if (baseNeigongGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Neigong] = (sbyte)baseNeigongGrid;
+                    maxSlots[CombatSkillEquipType.Neigong] = (sbyte)Math.Clamp(baseNeigongGrid, 9, 99);
                 }
                 if (baseCuipoGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Attack] = (sbyte)baseCuipoGrid;
+                    maxSlots[CombatSkillEquipType.Attack] = (sbyte)Math.Clamp(baseCuipoGrid, 9, 99);
                 }
                 if (baseQingyingGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Agile] = (sbyte)baseQingyingGrid;
+                    maxSlots[CombatSkillEquipType.Agile] = (sbyte)Math.Clamp(baseQingyingGrid, 9, 99);
                 }
                 if (baseHutiGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Defense] = (sbyte)baseHutiGrid;
+                    maxSlots[CombatSkillEquipType.Defense] = (sbyte)Math.Clamp(baseHutiGrid, 9, 99);
                 }
                 if (baseQiqiaoGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Assist] = (sbyte)baseQiqiaoGrid;
+                    maxSlots[CombatSkillEquipType.Assist] = (sbyte)Math.Clamp(baseQiqiaoGrid, 9, 99);
                 }
             }
+
+            AdaptableLog.Info("变更后的MaxSlotCounts。");
+            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[0].ToString());
+            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[1].ToString());
+            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[2].ToString());
+            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[3].ToString());
+            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[4].ToString());
         }
 
         /// <summary>
@@ -209,17 +230,9 @@ namespace LKXModsGongFaGridCostBackend
             }
         }
 
-        [HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillNeedMobilityCanUse")]
+        /*[HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillNeedMobilityCanUse")]
         public static void CombatDomain_UpdateSkillNeedMobilityCanUse_Patch(CombatCharacter character, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
         {
-            /*if (!character.IsAlly)
-            {
-                CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-                foreach (CombatSkillKey combatSkillKey in  ____enemySkillDataDict.Keys)
-                {
-                    ____enemySkillDataDict.Remove(combatSkillKey);
-                }
-            }*/
 
             //尝试解决队友功法报错
             CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
@@ -231,20 +244,12 @@ namespace LKXModsGongFaGridCostBackend
                 }
             }
 
-        }
+        }*/
 
-        [HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillCanUse", new Type[] {typeof(CombatCharacter), typeof(short), typeof(DataContext) })]
-        public static void CombatDomain_UpdateSkillCanUse_Patch(CombatCharacter character, short skillId, DataContext context, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
+        /*[HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillCanUse", new Type[] { typeof(DataContext), typeof(CombatCharacter), typeof(short) })]
+        public static void CombatDomain_UpdateSkillCanUse_Patch(DataContext context, CombatCharacter character, short skillId, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
         {
-            /*if (!character.IsAlly)
-            {
-                CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-                foreach (CombatSkillKey combatSkillKey in  ____enemySkillDataDict.Keys)
-                {
-                    ____enemySkillDataDict.Remove(combatSkillKey);
-                }
-            }*/
-
+            
             //尝试解决队友功法报错
             CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
             foreach (CombatSkillKey combatSkillKey in (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Keys)
@@ -254,6 +259,6 @@ namespace LKXModsGongFaGridCostBackend
                     (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Remove(combatSkillKey);
                 }
             }
-        }
+        }*/
     }
 }

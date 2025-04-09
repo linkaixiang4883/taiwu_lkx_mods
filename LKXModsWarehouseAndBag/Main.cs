@@ -10,7 +10,7 @@ namespace LKXModsWarehouseAndBag
     /// <summary>
     /// 
     /// </summary>
-    [PluginConfig("LKXModsWarehouseAndBag", "LKX", "0.0.1")]
+    [PluginConfig("LKXModsWarehouseAndBag", "LKX", "0.1.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;

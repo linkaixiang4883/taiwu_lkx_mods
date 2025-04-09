@@ -13,7 +13,7 @@ using GameData.Domains.Map;
 
 namespace LKXModsEnYi
 {
-    [PluginConfig("LKXModsEnYi", "LKX", "0.2.0")]
+    [PluginConfig("LKXModsEnYi", "LKX", "3.1.0.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -67,48 +67,72 @@ namespace LKXModsEnYi
                 AdaptableLog.Info(item.Name + ":" + item.TemplateId);
             }
 
-            AdaptableLog.Error("成功加载存档");*/
+            AdaptableLog.Info("成功加载存档");*/
         }
 
         /// <summary>
-        /// patch功法修改
+        /// patch恩义修改1
         /// </summary>
         /// <param name="__instance"></param>
         /// <param name="__result"></param>
-        [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Map.MapDomain), "ChangeSpiritualDebt")]
-        public static void MapDomain_ChangeSpiritualDebt_Patch(GameData.Domains.Map.MapDomain __instance, DataContext context, short areaId, ref short spiritualDebt)
+        [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Extra.ExtraDomain), "ChangeAreaSpiritualDebt")]
+        public static void ExtraDomain_ChangeAreaSpiritualDebt_Patch(GameData.Domains.Extra.ExtraDomain __instance, DataContext context, short areaId, ref int delta)
         {
+            //AdaptableLog.Info("进入ChangeAreaSpiritualDebt方法！");
+            //AdaptableLog.Info("delta：" + delta.ToString());
             if (enableAll)
             {
-                //AdaptableLog.Info("设置全地区100%恩义。");
-                spiritualDebt = 1000;
-                return;
+                delta = 1000;
             }
 
-            MapAreaData areaData = __instance.GetElement_Areas(areaId);
-            //AdaptableLog.Info("spiritualDebt:" + spiritualDebt);
-            /*switch (areaData.GetTemplateId())
-            {
-                case FULONG_AREA_TEMPLATE_ID:
-                case RANSHAN_AREA_TEMPLATE_ID:
-                case KONGSANG_AREA_TEMPLATE_ID:
-                    spiritualDebt = 1000;
-                    break;
-            }*/
+            MapAreaData areaData = DomainManager.Map.GetElement_Areas(areaId);
             if (_fulongAreaTemplateId > 0 && enableFuLong && areaData.GetTemplateId() == _fulongAreaTemplateId)
             {
                 //AdaptableLog.Info("设置赤明岛100%恩义。");
-                spiritualDebt = 1000;
+                delta = 1000;
             }
             if (_ranshanAreaTemplateId > 0 && enableRanShan && areaData.GetTemplateId() == _ranshanAreaTemplateId)
             {
                 //AdaptableLog.Info("设置然山100%恩义。");
-                spiritualDebt = 1000;
+                delta = 1000;
             }
             if (_kongsangAreaTemplateId > 0 && enableKongSangShan && areaData.GetTemplateId() == _kongsangAreaTemplateId)
             {
                 //AdaptableLog.Info("设置空桑100%恩义。");
-                spiritualDebt = 1000;
+                delta = 1000;
+            }
+        }
+
+        /// <summary>
+        /// patch恩义修改2
+        /// </summary>
+        /// <param name="__instance"></param>
+        /// <param name="__result"></param>
+        [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Extra.ExtraDomain), "SetAreaSpiritualDebt")]
+        public static void ExtraDomain_SetAreaSpiritualDebt_Patch(GameData.Domains.Extra.ExtraDomain __instance, DataContext context, short areaId, ref int value)
+        {
+            //AdaptableLog.Info("进入SetAreaSpiritualDebt方法！");
+            //AdaptableLog.Info("delta：" + value.ToString());
+            if (enableAll)
+            {
+                value = 1000;
+            }
+
+            MapAreaData areaData = DomainManager.Map.GetElement_Areas(areaId);
+            if (_fulongAreaTemplateId > 0 && enableFuLong && areaData.GetTemplateId() == _fulongAreaTemplateId)
+            {
+                //AdaptableLog.Info("设置赤明岛100%恩义。");
+                value = 1000;
+            }
+            if (_ranshanAreaTemplateId > 0 && enableRanShan && areaData.GetTemplateId() == _ranshanAreaTemplateId)
+            {
+                //AdaptableLog.Info("设置然山100%恩义。");
+                value = 1000;
+            }
+            if (_kongsangAreaTemplateId > 0 && enableKongSangShan && areaData.GetTemplateId() == _kongsangAreaTemplateId)
+            {
+                //AdaptableLog.Info("设置空桑100%恩义。");
+                value = 1000;
             }
 
         }
