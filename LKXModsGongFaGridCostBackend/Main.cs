@@ -37,8 +37,6 @@ namespace LKXModsGongFaGridCostBackend
             }
         }
 
-        private const sbyte NewMaxSlotCount = 99;
-
         public override void Initialize()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(Run));
