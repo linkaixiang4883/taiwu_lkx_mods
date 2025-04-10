@@ -101,31 +101,6 @@ namespace LKXModsGongFaGridCostBackend
             Config.CombatSkill.Instance.GetAllKeys();
             if (enableBaseGrid)
             {
-                Type CSH = typeof(GameData.Domains.Character.CombatSkillHelper);
-                sbyte[] maxSlots = (sbyte[])CSH.GetField("MaxSlotCounts", BindingFlags.Static | BindingFlags.Public).GetValue(null);
-                sbyte[] beginIndex = (sbyte[])CSH.GetField("SlotBeginIndexes", BindingFlags.Static | BindingFlags.Public).GetValue(null);
-                sbyte[] endIndex = (sbyte[])CSH.GetField("SlotEndIndexes", BindingFlags.Static | BindingFlags.Public).GetValue(null);
-                
-                maxSlots[CombatSkillEquipType.Neigong] = 24;
-                beginIndex[CombatSkillEquipType.Neigong] = 0;
-                endIndex[CombatSkillEquipType.Neigong] = 24;
-
-                maxSlots[CombatSkillEquipType.Attack] = 24;
-                beginIndex[CombatSkillEquipType.Attack] = 24;
-                endIndex[CombatSkillEquipType.Attack] = 48;
-
-                maxSlots[CombatSkillEquipType.Agile] = 24;
-                beginIndex[CombatSkillEquipType.Agile] = 48;
-                endIndex[CombatSkillEquipType.Agile] = 72;
-
-                maxSlots[CombatSkillEquipType.Defense] = 24;
-                beginIndex[CombatSkillEquipType.Defense] = 72;
-                endIndex[CombatSkillEquipType.Defense] = 96;
-
-                maxSlots[CombatSkillEquipType.Assist] = 24;
-                beginIndex[CombatSkillEquipType.Assist] = 96;
-                endIndex[CombatSkillEquipType.Assist] = 120;
-
                 if (baseNeigongGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Neigong] = (sbyte)baseNeigongGrid;
@@ -147,13 +122,6 @@ namespace LKXModsGongFaGridCostBackend
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Assist] = (sbyte)baseQiqiaoGrid;
                 }
             }
-
-            AdaptableLog.Info("变更后的MaxSlotCounts。");
-            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[0].ToString());
-            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[1].ToString());
-            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[2].ToString());
-            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[3].ToString());
-            AdaptableLog.Info(CombatSkillHelper.MaxSlotCounts[4].ToString());
         }
 
         /// <summary>
