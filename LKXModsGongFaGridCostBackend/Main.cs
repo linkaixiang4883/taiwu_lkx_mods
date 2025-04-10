@@ -101,33 +101,50 @@ namespace LKXModsGongFaGridCostBackend
             Config.CombatSkill.Instance.GetAllKeys();
             if (enableBaseGrid)
             {
-                var maxSlotField = typeof(GameData.Domains.Character.CombatSkillHelper)
-                .GetField("MaxSlotCounts", BindingFlags.Static | BindingFlags.Public);
-                sbyte[] maxSlots = (sbyte[])maxSlotField.GetValue(null);
+                Type CSH = typeof(GameData.Domains.Character.CombatSkillHelper);
+                sbyte[] maxSlots = (sbyte[])CSH.GetField("MaxSlotCounts", BindingFlags.Static | BindingFlags.Public).GetValue(null);
+                sbyte[] beginIndex = (sbyte[])CSH.GetField("SlotBeginIndexes", BindingFlags.Static | BindingFlags.Public).GetValue(null);
+                sbyte[] endIndex = (sbyte[])CSH.GetField("SlotEndIndexes", BindingFlags.Static | BindingFlags.Public).GetValue(null);
+                
+                maxSlots[CombatSkillEquipType.Neigong] = 24;
+                beginIndex[CombatSkillEquipType.Neigong] = 0;
+                endIndex[CombatSkillEquipType.Neigong] = 24;
+
+                maxSlots[CombatSkillEquipType.Attack] = 24;
+                beginIndex[CombatSkillEquipType.Attack] = 24;
+                endIndex[CombatSkillEquipType.Attack] = 48;
+
+                maxSlots[CombatSkillEquipType.Agile] = 24;
+                beginIndex[CombatSkillEquipType.Agile] = 48;
+                endIndex[CombatSkillEquipType.Agile] = 72;
+
+                maxSlots[CombatSkillEquipType.Defense] = 24;
+                beginIndex[CombatSkillEquipType.Defense] = 72;
+                endIndex[CombatSkillEquipType.Defense] = 96;
+
+                maxSlots[CombatSkillEquipType.Assist] = 24;
+                beginIndex[CombatSkillEquipType.Assist] = 96;
+                endIndex[CombatSkillEquipType.Assist] = 120;
+
                 if (baseNeigongGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Neigong] = (sbyte)baseNeigongGrid;
-                    maxSlots[CombatSkillEquipType.Neigong] = (sbyte)Math.Clamp(baseNeigongGrid, 9, 99);
                 }
                 if (baseCuipoGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Attack] = (sbyte)baseCuipoGrid;
-                    maxSlots[CombatSkillEquipType.Attack] = (sbyte)Math.Clamp(baseCuipoGrid, 9, 99);
                 }
                 if (baseQingyingGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Agile] = (sbyte)baseQingyingGrid;
-                    maxSlots[CombatSkillEquipType.Agile] = (sbyte)Math.Clamp(baseQingyingGrid, 9, 99);
                 }
                 if (baseHutiGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Defense] = (sbyte)baseHutiGrid;
-                    maxSlots[CombatSkillEquipType.Defense] = (sbyte)Math.Clamp(baseHutiGrid, 9, 99);
                 }
                 if (baseQiqiaoGrid > 0)
                 {
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Assist] = (sbyte)baseQiqiaoGrid;
-                    maxSlots[CombatSkillEquipType.Assist] = (sbyte)Math.Clamp(baseQiqiaoGrid, 9, 99);
                 }
             }
 
