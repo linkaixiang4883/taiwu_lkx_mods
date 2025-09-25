@@ -1,19 +1,15 @@
-﻿using HarmonyLib;
-using TaiwuModdingLib.Core.Plugin;
-using Config;
-using System.Collections.Generic;
-using GameData.Utilities;
+﻿using GameData.Common;
 using GameData.Domains;
-using GameData.Domains.Combat;
-using GameData.Domains.CombatSkill;
-using System;
-using GameData.Common;
-using GameData.Domains.Character;
 using GameData.Domains.Map;
+using GameData.Utilities;
+using HarmonyLib;
+using System;
+using System.Reflection;
+using TaiwuModdingLib.Core.Plugin;
 
 namespace LKXModsEnYi
 {
-    [PluginConfig("LKXModsEnYi", "LKX", "3.1.0.0")]
+    [PluginConfig("LKXModsEnYi", "LKX", "0.0.79.43")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -39,7 +35,7 @@ namespace LKXModsEnYi
 
         public override void Initialize()
         {
-            harmony = Harmony.CreateAndPatchAll(typeof(Run));
+            harmony = Harmony.CreateAndPatchAll(typeof(ExtraDomain_SetAreaSpiritualDebt_Patch));
         }
 
         private static bool enableAll;
@@ -69,73 +65,69 @@ namespace LKXModsEnYi
 
             AdaptableLog.Info("成功加载存档");*/
         }
-
-        /// <summary>
-        /// patch恩义修改1
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="__result"></param>
-        [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Extra.ExtraDomain), "ChangeAreaSpiritualDebt")]
-        public static void ExtraDomain_ChangeAreaSpiritualDebt_Patch(GameData.Domains.Extra.ExtraDomain __instance, DataContext context, short areaId, ref int delta)
+        public static void ModifyValue(short areaId, ref int value)
         {
-            //AdaptableLog.Info("进入ChangeAreaSpiritualDebt方法！");
-            //AdaptableLog.Info("delta：" + delta.ToString());
-            if (enableAll)
+            if (Run.enableAll)
             {
-                delta = 1000;
+                value = GlobalConfig.Instance.SpiritualDebtLimit[1];
             }
 
             MapAreaData areaData = DomainManager.Map.GetElement_Areas(areaId);
             if (_fulongAreaTemplateId > 0 && enableFuLong && areaData.GetTemplateId() == _fulongAreaTemplateId)
             {
                 //AdaptableLog.Info("设置赤明岛100%恩义。");
-                delta = 1000;
+                value = GlobalConfig.Instance.SpiritualDebtLimit[1];
             }
             if (_ranshanAreaTemplateId > 0 && enableRanShan && areaData.GetTemplateId() == _ranshanAreaTemplateId)
             {
                 //AdaptableLog.Info("设置然山100%恩义。");
-                delta = 1000;
+                value = GlobalConfig.Instance.SpiritualDebtLimit[1];
             }
             if (_kongsangAreaTemplateId > 0 && enableKongSangShan && areaData.GetTemplateId() == _kongsangAreaTemplateId)
             {
                 //AdaptableLog.Info("设置空桑100%恩义。");
-                delta = 1000;
+                value = GlobalConfig.Instance.SpiritualDebtLimit[1];
             }
         }
+    }
 
-        /// <summary>
-        /// patch恩义修改2
-        /// </summary>
-        /// <param name="__instance"></param>
-        /// <param name="__result"></param>
-        [HarmonyPrefix, HarmonyPatch(typeof(GameData.Domains.Extra.ExtraDomain), "SetAreaSpiritualDebt")]
-        public static void ExtraDomain_SetAreaSpiritualDebt_Patch(GameData.Domains.Extra.ExtraDomain __instance, DataContext context, short areaId, ref int value)
+    /// <summary>
+    /// patch恩义修改1
+    /// </summary>
+    /// <param name="__instance"></param>
+    /// <param name="__result"></param>
+    [HarmonyPatch]
+    public static class ExtraDomain_SetAreaSpiritualDebt_Patch
+    {
+        static MethodBase TargetMethod()
         {
-            //AdaptableLog.Info("进入SetAreaSpiritualDebt方法！");
-            //AdaptableLog.Info("delta：" + value.ToString());
-            if (enableAll)
-            {
-                value = 1000;
-            }
+            var type = typeof(GameData.Domains.Extra.ExtraDomain);
 
-            MapAreaData areaData = DomainManager.Map.GetElement_Areas(areaId);
-            if (_fulongAreaTemplateId > 0 && enableFuLong && areaData.GetTemplateId() == _fulongAreaTemplateId)
+            // 石牢三魔版本
+            var m = type.GetMethod("SetAreaSpiritualDebt", new Type[]
             {
-                //AdaptableLog.Info("设置赤明岛100%恩义。");
-                value = 1000;
-            }
-            if (_ranshanAreaTemplateId > 0 && enableRanShan && areaData.GetTemplateId() == _ranshanAreaTemplateId)
-            {
-                //AdaptableLog.Info("设置然山100%恩义。");
-                value = 1000;
-            }
-            if (_kongsangAreaTemplateId > 0 && enableKongSangShan && areaData.GetTemplateId() == _kongsangAreaTemplateId)
-            {
-                //AdaptableLog.Info("设置空桑100%恩义。");
-                value = 1000;
-            }
+                    typeof(GameData.Common.DataContext),
+                    typeof(short),
+                    typeof(int),
+                    typeof(bool),
+                    typeof(bool)
+            });
+            if (m != null) return m;
 
+            // 老版本
+            m = type.GetMethod("SetAreaSpiritualDebt", new Type[]
+            {
+                    typeof(GameData.Common.DataContext),
+                    typeof(short),
+                    typeof(int),
+                    typeof(bool)
+            });
+            return m;
         }
 
+        static void Prefix(short areaId, ref int value)
+        {
+            Run.ModifyValue(areaId, ref value);
+        }
     }
 }

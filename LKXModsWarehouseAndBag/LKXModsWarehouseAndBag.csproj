@@ -13,6 +13,10 @@
       <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="GameData.Shared">
+      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.Shared.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="TaiwuModdingLib">
       <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll of Taiwu_Data\Managed\TaiwuModdingLib.dll</HintPath>
       <Private>False</Private>

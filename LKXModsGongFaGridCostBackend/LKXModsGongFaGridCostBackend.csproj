@@ -15,6 +15,13 @@
       <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="GameData.Shared">
+      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.Shared.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="GameData.Utilities">
+      <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\Backend\GameData.Utilities.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>E:\SteamLibrary\steamapps\common\The Scroll Of Taiwu\The Scroll of Taiwu_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>

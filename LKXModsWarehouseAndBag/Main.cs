@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using TaiwuModdingLib.Core.Plugin;
 using GameData.Domains;
 using GameData.Domains.Character;
@@ -10,7 +9,7 @@ namespace LKXModsWarehouseAndBag
     /// <summary>
     /// 
     /// </summary>
-    [PluginConfig("LKXModsWarehouseAndBag", "LKX", "0.1.0")]
+    [PluginConfig("LKXModsWarehouseAndBag", "LKX", "0.0.79.43")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -40,7 +39,6 @@ namespace LKXModsWarehouseAndBag
             DomainManager.Mod.GetSetting(ModIdStr, "inventoryCount", ref inventoryCount);
             DomainManager.Mod.GetSetting(ModIdStr, "warehouseInventory", ref warehouseInventory);
             DomainManager.Mod.GetSetting(ModIdStr, "resourceCount", ref resourceCount);
-            Config.CombatSkill.Instance.GetAllKeys();
         }
 
         /// <summary>

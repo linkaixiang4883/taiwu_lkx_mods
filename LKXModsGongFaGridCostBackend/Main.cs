@@ -1,23 +1,16 @@
-﻿using HarmonyLib;
-using TaiwuModdingLib.Core.Plugin;
-using Config;
-using System.Collections.Generic;
-using GameData.Utilities;
+﻿using Config;
 using GameData.Domains;
-using GameData.Domains.Combat;
 using GameData.Domains.CombatSkill;
-using System;
-using GameData.Common;
-using GameData.Domains.Character;
-using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
-using CombatSkillHelper = GameData.Domains.Character.CombatSkillHelper;
-using HarmonyLib.Tools;
-using System.Diagnostics;
+using GameData.Utilities;
+using HarmonyLib;
 using System.Reflection;
+using TaiwuModdingLib.Core.Plugin;
+using TaiwuModdingLib.Core.Utils;
+using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
 
 namespace LKXModsGongFaGridCostBackend
 {
-    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.0.76.30")]
+    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.0.79.43")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -40,6 +33,7 @@ namespace LKXModsGongFaGridCostBackend
         public override void Initialize()
         {
             harmony = Harmony.CreateAndPatchAll(typeof(Run));
+            //AdaptableLog.Info("执行了init");
         }
 
         private static bool enableGridCost;
@@ -95,8 +89,7 @@ namespace LKXModsGongFaGridCostBackend
             DomainManager.Mod.GetSetting(ModIdStr, "baseQingyingGrid", ref baseQingyingGrid);
             DomainManager.Mod.GetSetting(ModIdStr, "baseHutiGrid", ref baseHutiGrid);
             DomainManager.Mod.GetSetting(ModIdStr, "baseQiqiaoGrid", ref baseQiqiaoGrid);
-
-            Config.CombatSkill.Instance.GetAllKeys();
+            
             if (enableBaseGrid)
             {
                 if (baseNeigongGrid > 0)
@@ -120,6 +113,8 @@ namespace LKXModsGongFaGridCostBackend
                     GlobalConfig.Instance.CombatSkillInitialEquipSlotCounts[CombatSkillEquipType.Assist] = (sbyte)baseQiqiaoGrid;
                 }
             }
+            PatchGongfa();
+            
         }
 
         /// <summary>
@@ -127,8 +122,8 @@ namespace LKXModsGongFaGridCostBackend
         /// </summary>
         /// <param name="__instance"></param>
         /// <param name="__result"></param>
-        [HarmonyPostfix, HarmonyPatch(typeof(Config.CombatSkill), "GetAllKeys")]
-        public static void CombatSkill_GetAllKeys_Patch(Config.CombatSkill __instance, ref List<CombatSkillItem> ____dataArray)
+        /// [HarmonyPostfix, HarmonyPatch(typeof(Config.CombatSkill), "GetAllKeys")]
+        public static void PatchGongfa()
         {
             if (Loaded)
             {
@@ -138,7 +133,8 @@ namespace LKXModsGongFaGridCostBackend
             {
                 return;
             }
-            foreach (CombatSkillItem item in ____dataArray)
+            List<CombatSkillItem> dataArray = Config.CombatSkill.Instance.GetFieldValue("_dataArray", BindingFlags.NonPublic | BindingFlags.Instance) as List<CombatSkillItem>;
+            foreach (CombatSkillItem item in dataArray)
             {
                 if (enableAllGridCost)
                 {

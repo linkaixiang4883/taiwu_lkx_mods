@@ -1,5 +1,4 @@
 ﻿using Config;
-using Config.Common;
 using GameData.Domains.CombatSkill;
 using HarmonyLib;
 using System.Collections.Generic;
@@ -94,7 +93,6 @@ namespace LKXModsGongFaGridCost
             ModManager.GetSetting(ModIdStr, "baseHutiGrid", ref baseHutiGrid);
             ModManager.GetSetting(ModIdStr, "baseQiqiaoGrid", ref baseQiqiaoGrid);
 
-            CombatSkill.Instance.GetAllKeys();
             if (enableBaseGrid)
             {
                 if (baseNeigongGrid > 0)
@@ -124,7 +122,7 @@ namespace LKXModsGongFaGridCost
         /// 执行
         /// </summary>
         /// <param name="____dataArray"></param>
-        [HarmonyPostfix, HarmonyPatch(typeof(CombatSkill), "GetAllKeys")]
+        /// [HarmonyPostfix, HarmonyPatch(typeof(CombatSkill), "GetAllKeys")]
         public static void PatchSkill(ref List<CombatSkillItem> ____dataArray)
         {
             if (Loaded)
