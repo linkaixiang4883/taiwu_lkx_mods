@@ -10,7 +10,7 @@ using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
 
 namespace LKXModsGongFaGridCostBackend
 {
-    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "0.0.79.43")]
+    [PluginConfig("LKXModsGongFaGridCostBackend", "LKX", "1.0.56.0")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -61,6 +61,8 @@ namespace LKXModsGongFaGridCostBackend
         private static int baseQingyingGrid;
         private static int baseHutiGrid;
         private static int baseQiqiaoGrid;
+
+        private static int targetType; // 0=所有角色, 1=太吾+同道, 2=仅太吾
         public override void OnModSettingUpdate()
         {
             Loaded = false;
@@ -89,8 +91,11 @@ namespace LKXModsGongFaGridCostBackend
             DomainManager.Mod.GetSetting(ModIdStr, "baseQingyingGrid", ref baseQingyingGrid);
             DomainManager.Mod.GetSetting(ModIdStr, "baseHutiGrid", ref baseHutiGrid);
             DomainManager.Mod.GetSetting(ModIdStr, "baseQiqiaoGrid", ref baseQiqiaoGrid);
-            
-            if (enableBaseGrid)
+
+            DomainManager.Mod.GetSetting(ModIdStr, "targetType", ref targetType);
+
+            // 所有角色：直接改 GlobalConfig，全局生效
+            if (enableBaseGrid && targetType == 0)
             {
                 if (baseNeigongGrid > 0)
                 {
@@ -209,35 +214,62 @@ namespace LKXModsGongFaGridCostBackend
             }
         }
 
-        /*[HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillNeedMobilityCanUse")]
-        public static void CombatDomain_UpdateSkillNeedMobilityCanUse_Patch(CombatCharacter character, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
+        #region 太吾/同道生效
+
+        /// <summary>
+        /// 内功格子 Postfix — 叠加差值
+        /// </summary>
+        [HarmonyPostfix, HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetCombatSkillSlotCountNeigong")]
+        static void PostfixNeigong(GameData.Domains.Character.Character __instance, ref sbyte __result)
         {
+            if (!enableBaseGrid) return;
+            if (targetType == 0) return; // 所有角色走 GlobalConfig，不需要 Postfix
 
-            //尝试解决队友功法报错
-            CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-            foreach (CombatSkillKey combatSkillKey in (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Keys)
-            {
-                if (!combatSkillCollection.ContainsKey(combatSkillKey))
-                {
-                    (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Remove(combatSkillKey);
-                }
-            }
+            bool shouldApply = targetType == 2
+                ? __instance.IsTaiwu()
+                : __instance.IsTaiwu() || DomainManager.Taiwu.IsInGroup(__instance.GetId());
 
-        }*/
+            if (!shouldApply) return;
 
-        /*[HarmonyPrefix, HarmonyPatch(typeof(CombatDomain), "UpdateSkillCanUse", new Type[] { typeof(DataContext), typeof(CombatCharacter), typeof(short) })]
-        public static void CombatDomain_UpdateSkillCanUse_Patch(DataContext context, CombatCharacter character, short skillId, ref Dictionary<CombatSkillKey, CombatSkillData> ____selfSkillDataDict, ref Dictionary<CombatSkillKey, CombatSkillData> ____enemySkillDataDict)
+            int delta = baseNeigongGrid - 6;
+            if (delta <= 0) return;
+
+            __result = (sbyte)System.Math.Min(System.Math.Max(__result + delta, 0), 99);
+        }
+
+        /// <summary>
+        /// 非内功基础格子 Postfix — 叠加差值
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GameData.Domains.Character.Character), "GetCombatSkillBasicSlotCount",
+            new System.Type[] { typeof(sbyte), typeof(ArraySegmentList<short>) })]
+        static void PostfixBasicSlot(GameData.Domains.Character.Character __instance, sbyte equipType, ref sbyte __result)
         {
-            
-            //尝试解决队友功法报错
-            CombatSkillCollection combatSkillCollection = (CombatSkillCollection)AccessTools.Field(typeof(CombatSkillDomain), "_combatSkills").GetValue(DomainManager.CombatSkill);
-            foreach (CombatSkillKey combatSkillKey in (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Keys)
+            if (!enableBaseGrid) return;
+            if (targetType == 0) return; // 所有角色走 GlobalConfig，不需要 Postfix
+            if (equipType == 0) return;
+
+            bool shouldApply = targetType == 2
+                ? __instance.IsTaiwu()
+                : __instance.IsTaiwu() || DomainManager.Taiwu.IsInGroup(__instance.GetId());
+
+            if (!shouldApply) return;
+
+            int delta;
+            switch (equipType)
             {
-                if (!combatSkillCollection.ContainsKey(combatSkillKey))
-                {
-                    (character.IsAlly ? ____selfSkillDataDict : ____enemySkillDataDict).Remove(combatSkillKey);
-                }
+                case 1: delta = baseCuipoGrid - 1; break;
+                case 2: delta = baseQingyingGrid - 1; break;
+                case 3: delta = baseHutiGrid - 1; break;
+                case 4: delta = baseQiqiaoGrid - 1; break;
+                default: return;
             }
-        }*/
+            if (delta <= 0) return;
+
+            __result = (sbyte)System.Math.Min(System.Math.Max(__result + delta, 0), 99);
+        }
+
+        #endregion
+
     }
 }

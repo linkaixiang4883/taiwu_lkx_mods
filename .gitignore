@@ -5,3 +5,9 @@
 /.vs
 bin/
 obj/
+
+# Agent context files (not for git)
+AGENTS.md
+.hermes/
+# Decompiled DLL output
+decompiled/

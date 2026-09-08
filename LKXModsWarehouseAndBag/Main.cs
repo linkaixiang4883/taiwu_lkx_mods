@@ -3,13 +3,14 @@ using TaiwuModdingLib.Core.Plugin;
 using GameData.Domains;
 using GameData.Domains.Character;
 using GameData.Domains.Taiwu;
+using System;
 
 namespace LKXModsWarehouseAndBag
 {
     /// <summary>
     /// 
     /// </summary>
-    [PluginConfig("LKXModsWarehouseAndBag", "LKX", "0.0.79.43")]
+    [PluginConfig("LKXModsWarehouseAndBag", "LKX", "1.0.49.1")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;
@@ -29,16 +30,37 @@ namespace LKXModsWarehouseAndBag
             harmony = Harmony.CreateAndPatchAll(typeof(Run));
         }
 
-        private static bool npcInventoryEnable;
+        private static int targetType; // 0=所有角色, 1=太吾+同道, 2=仅太吾
         private static int inventoryCount;
         private static int warehouseInventory;
         private static int resourceCount;
+
+        private const int InventoryMin = 0;
+        private const int InventoryMax = 30000;
+        private const int WarehouseMin = 0;
+        private const int WarehouseMax = 50000;
+        private const int ResourceMin = 0;
+        private const int ResourceMax = 500000;
+
         public override void OnModSettingUpdate()
         {
-            DomainManager.Mod.GetSetting(ModIdStr, "npcInventoryEnable", ref npcInventoryEnable);
-            DomainManager.Mod.GetSetting(ModIdStr, "inventoryCount", ref inventoryCount);
-            DomainManager.Mod.GetSetting(ModIdStr, "warehouseInventory", ref warehouseInventory);
-            DomainManager.Mod.GetSetting(ModIdStr, "resourceCount", ref resourceCount);
+            DomainManager.Mod.GetSetting(ModIdStr, "targetType", ref targetType);
+
+            string invStr = "";
+            DomainManager.Mod.GetSetting(ModIdStr, "inventoryCount", ref invStr);
+            int.TryParse(invStr, out inventoryCount);
+
+            string whStr = "";
+            DomainManager.Mod.GetSetting(ModIdStr, "warehouseInventory", ref whStr);
+            int.TryParse(whStr, out warehouseInventory);
+
+            string resStr = "";
+            DomainManager.Mod.GetSetting(ModIdStr, "resourceCount", ref resStr);
+            int.TryParse(resStr, out resourceCount);
+
+            inventoryCount = Math.Clamp(inventoryCount, InventoryMin, InventoryMax);
+            warehouseInventory = Math.Clamp(warehouseInventory, WarehouseMin, WarehouseMax);
+            resourceCount = Math.Clamp(resourceCount, ResourceMin, ResourceMax);
         }
 
         /// <summary>
@@ -49,15 +71,20 @@ namespace LKXModsWarehouseAndBag
         [HarmonyPostfix, HarmonyPatch(typeof(Character), "GetMaxInventoryLoad")]
         public static void Character_GetMaxInventoryLoad_Patch(Character __instance, ref int __result)
         {
-            if (npcInventoryEnable)
+            switch (targetType)
             {
-                __result += (inventoryCount * 100);
-            } else
-            {
-                if (__instance.GetId() == DomainManager.Taiwu.GetTaiwuCharId())
-                {
+                case 0:
+                default: // 所有角色
                     __result += (inventoryCount * 100);
-                }
+                    break;
+                case 1: // 太吾+同道
+                    if (__instance.IsTaiwu() || DomainManager.Taiwu.IsInGroup(__instance.GetId()))
+                        __result += (inventoryCount * 100);
+                    break;
+                case 2: // 仅太吾
+                    if (__instance.IsTaiwu())
+                        __result += (inventoryCount * 100);
+                    break;
             }
         }
 

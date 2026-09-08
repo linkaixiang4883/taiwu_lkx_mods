@@ -4,10 +4,12 @@ using HarmonyLib;
 using System.Collections.Generic;
 using TaiwuModdingLib.Core.Plugin;
 using CombatSkillType = GameData.Domains.CombatSkill.CombatSkillType;
+using CharacterHelper = GameData.Domains.Character.CombatSkillHelper;
 
+///废弃
 namespace LKXModsGongFaGridCost
 {
-    [PluginConfig("LKXModsGongFaGridCost", "LKX", "0.0.76.30")]
+    [PluginConfig("LKXModsGongFaGridCost", "LKX", "1.0.1.1")]
     public class Run : TaiwuRemakePlugin
     {
         private Harmony harmony;

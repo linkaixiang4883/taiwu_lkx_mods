@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <ModVersion>1.0.13.0</ModVersion>
+    <AssemblyVersion>$(ModVersion)</AssemblyVersion>
+    <FileVersion>$(ModVersion)</FileVersion>
+  </PropertyGroup>
+</Project>
